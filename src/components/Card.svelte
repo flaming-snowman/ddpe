@@ -35,6 +35,14 @@
             grid-column: 1 / 6;
             grid-row: 4 / 5;
         }
+		.card.favorite-words {
+            grid-column: 1 / 6;
+            grid-row: 5 / 8;
+		}
+		.card.more-favorite-words {
+            grid-column: 6 / 12;
+            grid-row: 5 / 8
+		}
         .card.hours {
             grid-column: 6 / 12;
             grid-row: 2 / 3;

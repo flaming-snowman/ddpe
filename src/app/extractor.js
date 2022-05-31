@@ -128,7 +128,7 @@ export const extractData = async (files) => {
         totalSpent: 0,
         hoursValues: [],
         favoriteWords: null,
-        favWordsAll: null,
+        favWordsShort: null,
         payments: {
             total: 0,
             list: ''
@@ -259,9 +259,9 @@ export const extractData = async (files) => {
     console.log(`[debug] ${extractedData.guildCount} guilds loaded`);
 
     const words = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat().filter((w) => w.length > 4);
-    const allwords = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat();
+    const swords = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat().filter((w) => w.length <= 4);
     extractedData.favoriteWords = getFavoriteWords(words);
-    extractedData.favWordsAll = getFavoriteWords(allwords);
+    extractedData.favWordsShort = getFavoriteWords(swords);
     console.log(extractedData.favWordsAll);
     for (let wordData of extractedData.favoriteWords) {
         const userID = parseMention(wordData.word);

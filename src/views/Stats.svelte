@@ -198,13 +198,26 @@
                     </Leaderboard>
                 </Card>
                 <Card name="favorite-words">
-                    <Leaderboard title="Favorite Words" description="The words you use the most!">
-                        {#each $data.favWordsAll as w, i}
+                    <Leaderboard title="Favorite Short Words" description="The words you use the most!">
+                        {#each $data.favWordsShort as w, i}
                             <LeaderboardItem
                                 position={i}
                                 name={w.word}
-                                count="N/A"
-                                guild={w.count.toLocalString('en-US')}
+                                count=N/A
+                                guild={w.count.toLocaleString('en-US')}
+                                channel
+                            />
+                        {/each}
+                    </Leaderboard>
+                </Card>
+				<Card name="more-favorite-words">
+                    <Leaderboard title="Favorite Long Words" description="The words you use the most!">
+                        {#each $data.favoriteWords as w, i}
+                            <LeaderboardItem
+                                position={i}
+                                name={w.word}
+                                count=N/A
+                                guild={w.count.toLocaleString('en-US')}
                                 channel
                             />
                         {/each}
