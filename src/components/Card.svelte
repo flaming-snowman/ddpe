@@ -25,9 +25,15 @@
         }
         .card.top-users {
             grid-column: 1 / 6;
+            grid-row: 3 / 4;
         }
         .card.top-channels {
             grid-column: 6 / 12;
+            grid-row: 3 / 5;
+        }
+        .card.top-groups {
+            grid-column: 1 / 6;
+            grid-row: 4 / 5;
         }
         .card.hours {
             grid-column: 6 / 12;

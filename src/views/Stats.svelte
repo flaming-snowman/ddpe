@@ -31,10 +31,6 @@
                     '--toastProgressBackground': '#2F855A'
                 }
             });
-
-            timeout = setTimeout(() => {
-                showModal('<div style="text-align: center">Like what you see?<br><a href="https://androz2091.fr/discord" target="_blank">Support us by saying hello and sharing your stats in our Discord server!<a></div>');
-            }, 10000);
         } else navigate('/');
     });
 
@@ -188,7 +184,32 @@
                         {/each}
                     </Leaderboard>
                 </Card>
-
+                <Card name="top-groups">
+                    <Leaderboard title="Top Groups" description="The group DMs you chat the most in!">
+                        {#each $data.topGCs as channel, i}
+                            <LeaderboardItem
+                                position={i}
+                                name={channel.name}
+                                count={channel.messageCount}
+                                guild="Group DM"
+                                channel
+                            />
+                        {/each}
+                    </Leaderboard>
+                </Card>
+                <Card name="favorite-words">
+                    <Leaderboard title="Favorite Words" description="The words you use the most!">
+                        {#each $data.favWordsAll as w, i}
+                            <LeaderboardItem
+                                position={i}
+                                name={w.word}
+                                count="N/A"
+                                guild={w.count.toLocalString('en-US')}
+                                channel
+                            />
+                        {/each}
+                    </Leaderboard>
+                </Card>
                 <Card name="about">
                     <div style="text-align: center;">
                         <h2>About this project</h2>

@@ -119,6 +119,7 @@ export const extractData = async (files) => {
 
         topDMs: [],
         topChannels: [],
+		topGCs: [],
         guildCount: 0,
         dmChannelCount: 0,
         channelCount: 0,
@@ -127,6 +128,7 @@ export const extractData = async (files) => {
         totalSpent: 0,
         hoursValues: [],
         favoriteWords: null,
+        favWordsAll: null,
         payments: {
             total: 0,
             list: ''
@@ -207,7 +209,7 @@ export const extractData = async (files) => {
                 const data = JSON.parse(rawData);
                 const messages = parseCSV(rawMessages);
                 const name = messagesIndex[data.id];
-                const isDM = data.recipients && data.recipients.length === 2;
+                const isDM = data.type == 1
                 const dmUserID = isDM ? data.recipients.find((userID) => userID !== extractedData.user.id) : undefined;
                 channels.push({
                     data,
@@ -229,11 +231,17 @@ export const extractData = async (files) => {
 
     extractedData.channelCount = channels.filter(c => !c.isDM).length;
     extractedData.dmChannelCount = channels.length - extractedData.channelCount;
-    extractedData.topChannels = channels.filter(c => c.data && c.data.guild).sort((a, b) => b.messages.length - a.messages.length).slice(0, 10).map((channel) => ({
+    extractedData.topChannels = channels.filter(c => c.data && c.data.guild).sort((a, b) => b.messages.length - a.messages.length).slice(0, 40).map((channel) => ({
         name: channel.name,
         messageCount: channel.messages.length,
         guildName: channel.data.guild.name
     }));
+
+	extractedData.topGCs = channels.filter(c => c.data.type == 3).sort((a, b) => b.messages.length - a.messages.length).slice(0, 20).map((channel) => ({
+        name: channel.name,
+        messageCount: channel.messages.length,
+    }));
+
     extractedData.characterCount = channels.map((channel) => channel.messages).flat().map((message) => message.length).reduce((p, c) => p + c);
 
     for (let i = 0; i < 24; i++) {
@@ -250,8 +258,11 @@ export const extractData = async (files) => {
 
     console.log(`[debug] ${extractedData.guildCount} guilds loaded`);
 
-    const words = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat().filter((w) => w.length > 5);
+    const words = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat().filter((w) => w.length > 4);
+    const allwords = channels.map((channel) => channel.messages).flat().map((message) => message.words).flat();
     extractedData.favoriteWords = getFavoriteWords(words);
+    extractedData.favWordsAll = getFavoriteWords(allwords);
+    console.log(extractedData.favWordsAll);
     for (let wordData of extractedData.favoriteWords) {
         const userID = parseMention(wordData.word);
         if (userID) {
@@ -269,7 +280,7 @@ export const extractData = async (files) => {
     extractedData.topDMs = channels
         .filter((channel) => channel.isDM)
         .sort((a, b) => b.messages.length - a.messages.length)
-        .slice(0, 10)
+        .slice(0, 20)
         .map((channel) => ({
             id: channel.data.id,
             dmUserID: channel.dmUserID,
@@ -299,7 +310,7 @@ export const extractData = async (files) => {
     extractedData.joinCallCount = statistics.joinCallCount;
     extractedData.addReactionCount = statistics.addReactionCount;
     extractedData.messageEditedCount = statistics.messageEditedCount;
-    extractedData.sentMessageCount = statistics.sendMessageCount;
+    extractedData.sentMessageCount = extractedData.hoursValues.reduce((a,b) => a+b);
     extractedData.averageMessageCountPerDay = extractedData.sentMessageCount && perDay(extractedData.sentMessageCount, extractedData.user.id);
     extractedData.slashCommandUsedCount = statistics.slashCommandUsedCount;
 
