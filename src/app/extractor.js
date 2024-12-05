@@ -231,7 +231,7 @@ export const extractData = async (files) => {
                 const data = JSON.parse(rawData);
                 const messages = extension === 'csv' ? parseCSV(rawMessages) : parseJson(rawMessages);
                 const name = messagesIndex[data.id];
-                const isDM = data.type == 1
+                const isDM = isOldPackagev2 ? data.type == 1 : data.type == "DM"
                 const dmUserID = isDM ? data.recipients.find((userID) => userID !== extractedData.user.id) : undefined;
                 channels.push({
                     data,
@@ -259,7 +259,7 @@ export const extractData = async (files) => {
         guildName: channel.data.guild.name
     }));
 
-	extractedData.topGCs = channels.filter(c => c.data.type == 3).sort((a, b) => b.messages.length - a.messages.length).slice(0, 20).map((channel) => ({
+	extractedData.topGCs = channels.filter(c => isOldPackagev2 ? c.data.type == 3 : c.data.type == "GROUP_DM").sort((a, b) => b.messages.length - a.messages.length).slice(0, 20).map((channel) => ({
         name: channel.name,
         messageCount: channel.messages.length,
     }));
@@ -340,6 +340,8 @@ export const extractData = async (files) => {
 
     loadTask.set('Calculating statistics...');
 
+    console.log("HI");
+    console.log(channels);
     console.log(extractedData);
 
     return extractedData;
